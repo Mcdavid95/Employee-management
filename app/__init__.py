@@ -1,5 +1,5 @@
 """third-party imports"""
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
@@ -36,5 +36,26 @@ def create_app(config_name):
 
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
+
+    @app.errorhandler(403)
+    def forbidden(error):
+        """
+        Handles 403 errors
+        """
+        return render_template('errors/403.html', title='Forbidden'), 403
+
+    @app.errorhandler(404)
+    def errorhandler(error):
+        """
+        Handles 404 errors
+        """
+        return render_template('errors/404.html', title='Not Found'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        """
+        Handles 500 errors
+        """
+        return render_template('errors/500.html', title='Server Error'), 500
 
     return app
